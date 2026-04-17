@@ -7,7 +7,8 @@ import lombok.Data;
 @Builder
 public class User {
     private int id;
-    private String userName;
-    private String userPassword;
-    private String name;
+    private String username;
+    private String password;
+    private String email;
+    private String role;
 }

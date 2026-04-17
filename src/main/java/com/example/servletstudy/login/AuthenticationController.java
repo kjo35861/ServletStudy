@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 
@@ -15,9 +16,9 @@ public class AuthenticationController extends HttpServlet {
 
     private User loginUser = User.builder()
             .id(1)
-            .userName("abcd")
-            .userPassword("1234")
-            .name("김준일")
+            .username("abcd")
+            .password("1234")
+            .email("김준일")
             .build();
 
     @Override
@@ -26,20 +27,35 @@ public class AuthenticationController extends HttpServlet {
         String json = JsonParserUtil.getJson(req);
         Map<String, Object> requestBody = JsonParserUtil.parse(json);
         System.out.println(requestBody);
-        if (!loginUser.getUserName().equals(requestBody.get("username"))) {
-            errorResponse(resp, "사용자 정보가 일치하지 않습니다.");
+        if (!loginUser.getUsername().equals(requestBody.get("username"))) {
+            ResponseEntity.builder()
+                    .status(403)
+                    .body("사용자 정보가 일치하지 않습니다.")
+                    .build()
+                    .response(resp);
+            // username 비교
+//            errorResponse(resp, "사용자 정보가 일치하지 않습니다.");
+            return;
         }
+        if (!loginUser.getPassword().equals(requestBody.get("password"))) {
+            ResponseEntity.builder()
+                    .status(403)
+                    .body("사용자 정보가 일치하지 않습니다.")
+                    .build()
+                    .response(resp);
+            // 비밀번호 비교
+//            errorResponse(resp, "사용자 정보가 일치하지 않습니다.");
+            return;
+        }
+
+        HttpSession session = req.getSession();
+        session.setAttribute("authentication", loginUser);
+        ResponseEntity.builder()
+                .status(200)
+                .body("로그인 완료!")
+                .build()
+                .response(resp);
     }
 
-    private void errorResponse(HttpServletResponse resp, String message) throws IOException {
-        resp.setStatus(403);
-        resp.setContentType("application/json");
-        Map<String, Object> responseMap = Map.of(
-                "code", 403,
-                "message", message
-        );
-        resp.getWriter().println(JsonParserUtil.stringify(responseMap));
-
-    }
 
 }
