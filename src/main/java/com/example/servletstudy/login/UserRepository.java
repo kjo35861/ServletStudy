@@ -3,7 +3,6 @@ package com.example.servletstudy.login;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.naming.Context;
 import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.*;
