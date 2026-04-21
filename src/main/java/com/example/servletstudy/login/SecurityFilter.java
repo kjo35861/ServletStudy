@@ -16,7 +16,8 @@ public class SecurityFilter implements Filter {
         String uri = httpReq.getRequestURI();
         String projectNameIgnoreUri = uri.substring(uri.indexOf("/", 1));
 
-        if (projectNameIgnoreUri.startsWith("/api/auth")) {
+        if (projectNameIgnoreUri.startsWith("/api/auth")
+                || projectNameIgnoreUri.startsWith("/api/html")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
